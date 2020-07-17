@@ -8,17 +8,12 @@ Class originally contributed by Catherine Holloway.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-
-from builtins import range
 from enum import IntEnum
-
-import quantities as pq
 
 from instruments.thorlabs.thorlabs_utils import check_cmd
 
 from instruments.abstract_instruments import Instrument
+import instruments.units as u
 from instruments.util_fns import enum_property, bool_property, unitful_property
 
 # CLASSES #####################################################################
@@ -67,7 +62,7 @@ class LCC25(Instrument):
 
     frequency = unitful_property(
         "freq",
-        pq.Hz,
+        u.Hz,
         format_code="{:.1f}",
         set_fmt="{}={}",
         valid_range=(5, 150),
@@ -139,7 +134,7 @@ class LCC25(Instrument):
 
     voltage1 = unitful_property(
         "volt1",
-        pq.V,
+        u.V,
         format_code="{:.1f}",
         set_fmt="{}={}",
         valid_range=(0, 25),
@@ -154,7 +149,7 @@ class LCC25(Instrument):
 
     voltage2 = unitful_property(
         "volt2",
-        pq.V,
+        u.V,
         format_code="{:.1f}",
         set_fmt="{}={}",
         valid_range=(0, 25),
@@ -169,7 +164,7 @@ class LCC25(Instrument):
 
     min_voltage = unitful_property(
         "min",
-        pq.V,
+        u.V,
         format_code="{:.1f}",
         set_fmt="{}={}",
         valid_range=(0, 25),
@@ -184,7 +179,7 @@ class LCC25(Instrument):
 
     max_voltage = unitful_property(
         "max",
-        pq.V,
+        u.V,
         format_code="{:.1f}",
         set_fmt="{}={}",
         valid_range=(0, 25),
@@ -200,7 +195,7 @@ class LCC25(Instrument):
 
     dwell = unitful_property(
         "dwell",
-        units=pq.ms,
+        units=u.ms,
         format_code="{:n}",
         set_fmt="{}={}",
         valid_range=(0, None),
@@ -215,7 +210,7 @@ class LCC25(Instrument):
 
     increment = unitful_property(
         "increment",
-        units=pq.V,
+        units=u.V,
         format_code="{:.1f}",
         set_fmt="{}={}",
         valid_range=(0, None),

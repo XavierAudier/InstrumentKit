@@ -7,18 +7,14 @@ instruments.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import unicode_literals
 
 import io
-from builtins import str, bytes
 
 import usbtmc
-import quantities as pq
 
 from instruments.abstract_instruments.comm import AbstractCommunicator
 from instruments.util_fns import assume_units
+import instruments.units as u
 
 # CLASSES #####################################################################
 
@@ -74,11 +70,11 @@ class USBTMCCommunicator(io.IOBase, AbstractCommunicator):
         :type: `~quantities.Quantity`
         :units: As specified or assumed to be of units ``seconds``
         """
-        return self._filelike.timeout * pq.second
+        return self._filelike.timeout * u.second
 
     @timeout.setter
     def timeout(self, newval):
-        newval = assume_units(newval, pq.second).rescale(pq.s).magnitude
+        newval = assume_units(newval, u.second).rescale(u.s).magnitude
         self._filelike.timeout = newval
 
     # FILE-LIKE METHODS #
@@ -150,7 +146,6 @@ class USBTMCCommunicator(io.IOBase, AbstractCommunicator):
         For a USBTMC connection, this function does not actually do anything
         and simply returns.
         """
-        pass
 
     # METHODS #
 

@@ -6,13 +6,14 @@ Defines globally-available subpackages and symbols for the instruments package.
 
 # IMPORTS ####################################################################
 
-from __future__ import absolute_import
 
 from . import abstract_instruments
 from .abstract_instruments import Instrument
 
 from . import agilent
 from . import generic_scpi
+from . import fluke
+from . import glassman
 from . import holzworth
 from . import hp
 from . import keithley
@@ -37,7 +38,7 @@ from .config import load_instruments
 # In keeping with PEP-396, we define a version number of the form
 # {major}.{minor}[.{postrelease}]{prerelease-tag}
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 __title__ = "instrumentkit"
 __description__ = "Test and measurement communication library"
@@ -47,4 +48,4 @@ __author__ = "Steven Casagrande"
 __email__ = "scasagrande@galvant.ca"
 
 __license__ = "AGPLv3"
-__copyright__ = "Copyright (c) 2012-2019 Steven Casagrande"
+__copyright__ = "Copyright (c) 2012-2020 Steven Casagrande"

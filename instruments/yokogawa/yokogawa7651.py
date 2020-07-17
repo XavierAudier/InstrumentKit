@@ -6,12 +6,10 @@ Provides support for the Yokogawa 7651 power supply.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
 
 from enum import IntEnum
 
-import quantities as pq
+import instruments.units as u
 
 from instruments.abstract_instruments import (
     PowerSupply,
@@ -31,9 +29,9 @@ class Yokogawa7651(PowerSupply, Instrument):
     Example usage:
 
     >>> import instruments as ik
-    >>> import quantities as pq
+    >>> import instruments.units as u
     >>> inst = ik.yokogawa.Yokogawa7651.open_gpibusb("/dev/ttyUSB0", 1)
-    >>> inst.voltage = 10 * pq.V
+    >>> inst.voltage = 10 * u.V
     """
 
     # INNER CLASSES #
@@ -93,7 +91,7 @@ class Yokogawa7651(PowerSupply, Instrument):
 
         @voltage.setter
         def voltage(self, newval):
-            newval = assume_units(newval, pq.volt).rescale(pq.volt).magnitude
+            newval = assume_units(newval, u.volt).rescale(u.volt).magnitude
             self.mode = self._parent.Mode.voltage
             self._parent.sendcmd('SA{};'.format(newval))
             self._parent.trigger()
@@ -115,7 +113,7 @@ class Yokogawa7651(PowerSupply, Instrument):
 
         @current.setter
         def current(self, newval):
-            newval = assume_units(newval, pq.amp).rescale(pq.amp).magnitude
+            newval = assume_units(newval, u.amp).rescale(u.amp).magnitude
             self.mode = self._parent.Mode.current
             self._parent.sendcmd('SA{};'.format(newval))
             self._parent.trigger()

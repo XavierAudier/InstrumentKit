@@ -8,14 +8,10 @@ CC1 Class originally contributed by Catherine Holloway.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-from builtins import range, map
-
 from enum import Enum
-import quantities as pq
 
 from instruments.generic_scpi.scpi_instrument import SCPIInstrument
+import instruments.units as u
 from instruments.util_fns import (
     ProxyList, assume_units, split_unit_str
 )
@@ -90,7 +86,7 @@ class CC1(SCPIInstrument):
 
     # INNER CLASSES #
 
-    class Channel(object):
+    class Channel:
 
         """
         Class representing a channel on the Qubitekk CC1.
@@ -229,11 +225,11 @@ class CC1(SCPIInstrument):
             of units nanoseconds.
         :type: `~quantities.Quantity`
         """
-        return pq.Quantity(*split_unit_str(self.query("WIND?"), "ns"))
+        return u.Quantity(*split_unit_str(self.query("WIND?"), "ns"))
 
     @window.setter
     def window(self, new_val):
-        new_val_mag = int(assume_units(new_val, pq.ns).rescale(pq.ns).magnitude)
+        new_val_mag = int(assume_units(new_val, u.ns).rescale(u.ns).magnitude)
         if new_val_mag < 0 or new_val_mag > 7:
             raise ValueError("Window is out of range.")
         # window must be an integer!
@@ -249,12 +245,12 @@ class CC1(SCPIInstrument):
         :rtype: quantities.ns
         :return: the delay value
         """
-        return pq.Quantity(*split_unit_str(self.query("DELA?"), "ns"))
+        return u.Quantity(*split_unit_str(self.query("DELA?"), "ns"))
 
     @delay.setter
     def delay(self, new_val):
-        new_val = assume_units(new_val, pq.ns).rescale(pq.ns)
-        if new_val < 0*pq.ns or new_val > 14*pq.ns:
+        new_val = assume_units(new_val, u.ns).rescale(u.ns)
+        if new_val < 0*u.ns or new_val > 14*u.ns:
             raise ValueError("New delay value is out of bounds.")
         if new_val.magnitude % 2 != 0:
             raise ValueError("New magnitude must be an even number")
@@ -272,7 +268,7 @@ class CC1(SCPIInstrument):
         """
         # the older versions of the firmware erroneously report the units of the
         # dwell time as being seconds rather than ms
-        dwell_time = pq.Quantity(*split_unit_str(self.query("DWEL?"), "s"))
+        dwell_time = u.Quantity(*split_unit_str(self.query("DWEL?"), "s"))
         if self.firmware[0] <= 2 and self.firmware[1] <= 1:
             return dwell_time/1000.0
 
@@ -280,7 +276,7 @@ class CC1(SCPIInstrument):
 
     @dwell_time.setter
     def dwell_time(self, new_val):
-        new_val_mag = assume_units(new_val, pq.s).rescale(pq.s).magnitude
+        new_val_mag = assume_units(new_val, u.s).rescale(u.s).magnitude
         if new_val_mag < 0:
             raise ValueError("Dwell time cannot be negative.")
         self.sendcmd(":DWEL {}".format(new_val_mag))

@@ -8,18 +8,14 @@ Class originally contributed by Catherine Holloway.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-from builtins import range
-
 from enum import IntEnum
-import quantities as pq
 
 from instruments.abstract_instruments import Instrument
+from instruments.thorlabs.thorlabs_utils import check_cmd
+import instruments.units as u
 from instruments.util_fns import (
     bool_property, enum_property, int_property, unitful_property
 )
-from instruments.thorlabs.thorlabs_utils import check_cmd
 
 # CLASSES #####################################################################
 
@@ -133,7 +129,7 @@ class SC10(Instrument):
 
     open_time = unitful_property(
         "open",
-        pq.ms,
+        u.ms,
         format_code="{:.0f}",
         set_fmt="{}={}",
         valid_range=(0, 999999),
@@ -148,7 +144,7 @@ class SC10(Instrument):
 
     shut_time = unitful_property(
         "shut",
-        pq.ms,
+        u.ms,
         format_code="{:.0f}",
         set_fmt="{}={}",
         valid_range=(0, 999999),

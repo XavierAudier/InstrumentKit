@@ -33,18 +33,13 @@ Based off of tektds224.py written by Steven Casagrande.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-from functools import reduce
-
-import time
-from time import sleep
 from datetime import datetime
+from enum import Enum
+from functools import reduce
 import operator
 import struct
-
-from builtins import range, map, round
-from enum import Enum
+import time
+from time import sleep
 
 import numpy as np
 
@@ -59,7 +54,7 @@ from instruments.util_fns import ProxyList
 # CLASSES #####################################################################
 
 
-class _TekTDS5xxMeasurement(object):
+class _TekTDS5xxMeasurement:
 
     """
     Class representing a measurement channel on the Tektronix TDS5xx
@@ -461,7 +456,6 @@ class TekTDS5xx(SCPIInstrument, Oscilloscope):
 
         self.sendcmd("DATA:WIDTH {}".format(newval))
 
-    @property
     def force_trigger(self):
         raise NotImplementedError
 

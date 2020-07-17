@@ -33,14 +33,12 @@ Kit project.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
 import time
 import struct
 
 from enum import IntEnum
 
-import quantities as pq
+import instruments.units as u
 
 from instruments.abstract_instruments import Instrument
 
@@ -265,7 +263,7 @@ class Keithley580(Instrument):
         :type: `~quantities.quantity.Quantity` or `str`
         """
         value = float(self.parse_status_word(self.get_status_word())['range'])
-        return value * pq.ohm
+        return value * u.ohm
 
     @input_range.setter
     def input_range(self, newval):
@@ -278,7 +276,7 @@ class Keithley580(Instrument):
             else:
                 raise ValueError('Only "auto" is acceptable when specifying '
                                  'the input range as a string.')
-        if isinstance(newval, pq.quantity.Quantity):
+        if isinstance(newval, u.quantity.Quantity):
             newval = float(newval)
 
         if isinstance(newval, (float, int)):
@@ -451,7 +449,7 @@ class Keithley580(Instrument):
             polarity = valid['polarity'][polarity]
             drycircuit = valid['drycircuit'][drycircuit]
             drive = valid['drive'][drive]
-            resistance = float(resistance) * pq.ohm
+            resistance = float(resistance) * u.ohm
         except:
             raise Exception('Cannot parse measurement: {}'.format(measurement))
 

@@ -6,17 +6,12 @@ Provides an abstract base class for signal generator output channels
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-
 import abc
-
-from future.utils import with_metaclass
 
 # CLASSES #####################################################################
 
 
-class SGChannel(with_metaclass(abc.ABCMeta, object)):
+class SGChannel(metaclass=abc.ABCMeta):
 
     """
     Python abstract base class representing a single channel for a signal
@@ -36,7 +31,6 @@ class SGChannel(with_metaclass(abc.ABCMeta, object)):
 
         :type: `~quantities.quantity.Quantity`
         """
-        pass
 
     @frequency.setter
     @abc.abstractmethod
@@ -51,7 +45,6 @@ class SGChannel(with_metaclass(abc.ABCMeta, object)):
 
         :type: `~quantities.quantity.Quantity`
         """
-        pass
 
     @power.setter
     @abc.abstractmethod
@@ -66,7 +59,6 @@ class SGChannel(with_metaclass(abc.ABCMeta, object)):
 
         :type: `~quantities.quantity.Quantity`
         """
-        pass
 
     @phase.setter
     @abc.abstractmethod
@@ -81,7 +73,6 @@ class SGChannel(with_metaclass(abc.ABCMeta, object)):
 
         :type: `bool`
         """
-        pass
 
     @output.setter
     @abc.abstractmethod

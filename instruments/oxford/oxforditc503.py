@@ -6,13 +6,8 @@ Provides support for the Oxford ITC 503 temperature controller.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-from builtins import range
-
-import quantities as pq
-
 from instruments.abstract_instruments import Instrument
+import instruments.units as u
 from instruments.util_fns import ProxyList
 
 # CLASSES #####################################################################
@@ -38,7 +33,7 @@ class OxfordITC503(Instrument):
 
     # INNER CLASSES #
 
-    class Sensor(object):
+    class Sensor:
 
         """
         Class representing a probe sensor on the Oxford ITC 503.
@@ -62,7 +57,7 @@ class OxfordITC503(Instrument):
             :type: `~quantities.quantity.Quantity`
             """
             value = float(self._parent.query('R{}'.format(self._idx))[1:])
-            return pq.Quantity(value, pq.Kelvin)
+            return u.Quantity(value, u.Kelvin)
 
     # PROPERTIES #
 

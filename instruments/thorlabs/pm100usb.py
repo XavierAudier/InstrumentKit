@@ -6,15 +6,13 @@ Provides the support for the Thorlabs PM100USB power meter.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
 
 import logging
 from collections import defaultdict, namedtuple
 
 from enum import Enum, IntEnum
 
-import quantities as pq
+import instruments.units as u
 
 from instruments.generic_scpi import SCPIInstrument
 from instruments.util_fns import enum_property
@@ -74,7 +72,7 @@ class PM100USB(SCPIInstrument):
 
     # INNER CLASSES #
 
-    class Sensor(object):
+    class Sensor:
         """
         Class representing a sensor on the ThorLabs PM100USB
 
@@ -213,12 +211,12 @@ class PM100USB(SCPIInstrument):
 
     # METHODS ##
 
-    _READ_UNITS = defaultdict(lambda: pq.dimensionless)
+    _READ_UNITS = defaultdict(lambda: u.dimensionless)
     _READ_UNITS.update({
-        MeasurementConfiguration.power: pq.W,
-        MeasurementConfiguration.current: pq.A,
-        MeasurementConfiguration.frequency: pq.Hz,
-        MeasurementConfiguration.voltage: pq.V,
+        MeasurementConfiguration.power: u.W,
+        MeasurementConfiguration.current: u.A,
+        MeasurementConfiguration.frequency: u.Hz,
+        MeasurementConfiguration.voltage: u.V,
 
     })
 

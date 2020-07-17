@@ -6,16 +6,11 @@ Provides support for the Keithley 6514 electrometer
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-from builtins import map
-
 from enum import Enum
-
-import quantities as pq
 
 from instruments.abstract_instruments import Electrometer
 from instruments.generic_scpi import SCPIInstrument
+import instruments.units as u
 from instruments.util_fns import bool_property, enum_property
 
 # CLASSES #####################################################################
@@ -30,7 +25,7 @@ class Keithley6514(SCPIInstrument, Electrometer):
     Example usage:
 
     >>> import instruments as ik
-    >>> import quantities as pq
+    >>> import instruments.units as u
     >>> dmm = ik.keithley.Keithley6514.open_gpibusb('/dev/ttyUSB0', 12)
     """
 
@@ -78,10 +73,10 @@ class Keithley6514(SCPIInstrument, Electrometer):
     # CONSTANTS #
 
     _MODE_UNITS = {
-        Mode.voltage: pq.volt,
-        Mode.current: pq.amp,
-        Mode.resistance: pq.ohm,
-        Mode.charge: pq.coulomb
+        Mode.voltage: u.volt,
+        Mode.current: u.amp,
+        Mode.resistance: u.ohm,
+        Mode.charge: u.coulomb
     }
 
     # PRIVATE METHODS #

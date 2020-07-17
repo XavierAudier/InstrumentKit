@@ -9,18 +9,10 @@ unit tests.
 
 # IMPORTS ####################################################################
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 
 import contextlib
 from io import BytesIO
-
-from builtins import bytes, str
-
-try:
-    from unittest import mock  # from Python 3.3 onward, this is in the stdlib
-except ImportError:
-    import mock
+from unittest import mock
 
 # FUNCTIONS ##################################################################
 

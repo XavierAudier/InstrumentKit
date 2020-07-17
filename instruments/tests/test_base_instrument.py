@@ -6,12 +6,9 @@ Module containing tests for the base Instrument class
 
 # IMPORTS ####################################################################
 
-from __future__ import absolute_import
 
 import socket
 import io
-
-from builtins import bytes
 import serial
 from serial.tools.list_ports_common import ListPortInfo
 
@@ -39,12 +36,12 @@ from . import mock
 
 def test_instrument_binblockread():
     with expected_protocol(
-        ik.Instrument,
-        [],
-        [
-            b"#210" + bytes.fromhex("00000001000200030004") + b"0",
-        ],
-        sep="\n"
+            ik.Instrument,
+            [],
+            [
+                b"#210" + bytes.fromhex("00000001000200030004") + b"0",
+            ],
+            sep="\n"
     ) as inst:
         np.testing.assert_array_equal(inst.binblockread(2), [0, 1, 2, 3, 4])
 
@@ -114,7 +111,7 @@ def test_instrument_open_serial(mock_serial_manager):
     )
 
 
-class fake_serial(object):
+class fake_serial:
     """
     Create a fake serial.Serial() object so that tests can be run without
     accessing a non-existant port.
@@ -257,7 +254,7 @@ def test_instrument_open_gpibusb(mock_serial_manager, mock_gpib_comm):
     mock_serial_manager.new_serial_connection.return_value.__class__ = SerialCommunicator
     mock_gpib_comm.return_value.__class__ = GPIBCommunicator
 
-    inst = ik.Instrument.open_gpibusb("/dev/port", gpib_address=1)
+    inst = ik.Instrument.open_gpibusb("/dev/port", gpib_address=1, model="gi")
 
     assert isinstance(inst._file, GPIBCommunicator) is True
 
@@ -270,7 +267,8 @@ def test_instrument_open_gpibusb(mock_serial_manager, mock_gpib_comm):
 
     mock_gpib_comm.assert_called_with(
         mock_serial_manager.new_serial_connection.return_value,
-        1
+        1,
+        "gi"
     )
 
 

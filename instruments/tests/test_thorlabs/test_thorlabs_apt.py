@@ -8,12 +8,11 @@ Module containing tests for the Thorlabs TC200
 
 # pylint: disable=unused-import
 
-from __future__ import absolute_import
 
 import struct
 
 import pytest
-import quantities as pq
+import instruments.units as u
 
 import instruments as ik
 from instruments.thorlabs._packets import ThorLabsPacket, hw_info_data
@@ -27,42 +26,42 @@ from instruments.tests import expected_protocol
 
 def test_apt_hw_info():
     with expected_protocol(
-        ik.thorlabs.ThorLabsAPT,
-        [
-            ThorLabsPacket(
-                message_id=ThorLabsCommands.HW_REQ_INFO,
-                param1=0x00, param2=0x00,
-                dest=0x50,
-                source=0x01,
-                data=None
-            ).pack()
-        ],
-        [
-            ThorLabsPacket(
-                message_id=ThorLabsCommands.HW_GET_INFO,
-                dest=0x01,
-                source=0x50,
-                data=hw_info_data.pack(
-                    # Serial number
-                    b'\x01\x02\x03\x04',
-                    # Model number
-                    "ABC-123".encode('ascii'),
-                    # HW type
-                    3,
-                    # FW version,
-                    0xa1, 0xa2, 0xa3,
-                    # Notes
-                    "abcdefg".encode('ascii'),
-                    # HW version
-                    42,
-                    # Mod state
-                    43,
-                    # Number of channels
-                    2
-                )
-            ).pack()
-        ],
-        sep=""
+            ik.thorlabs.ThorLabsAPT,
+            [
+                ThorLabsPacket(
+                    message_id=ThorLabsCommands.HW_REQ_INFO,
+                    param1=0x00, param2=0x00,
+                    dest=0x50,
+                    source=0x01,
+                    data=None
+                ).pack()
+            ],
+            [
+                ThorLabsPacket(
+                    message_id=ThorLabsCommands.HW_GET_INFO,
+                    dest=0x01,
+                    source=0x50,
+                    data=hw_info_data.pack(
+                        # Serial number
+                        b'\x01\x02\x03\x04',
+                        # Model number
+                        "ABC-123".encode('ascii'),
+                        # HW type
+                        3,
+                        # FW version,
+                        0xa1, 0xa2, 0xa3,
+                        # Notes
+                        "abcdefg".encode('ascii'),
+                        # HW version
+                        42,
+                        # Mod state
+                        43,
+                        # Number of channels
+                        2
+                    )
+                ).pack()
+            ],
+            sep=""
     ) as apt:
         # Check internal representations.
         # NB: we shouldn't do this in some sense, but these fields

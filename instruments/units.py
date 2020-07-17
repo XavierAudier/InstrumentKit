@@ -6,10 +6,10 @@ Module containing custom units used by various instruments.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
+# pylint: disable=unused-wildcard-import, wildcard-import
 
-from quantities import Hz, milli, UnitQuantity
+
+from quantities import *
 from quantities.unitquantity import IrreducibleUnit
 
 # UNITS #######################################################################

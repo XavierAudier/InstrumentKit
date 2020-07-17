@@ -6,13 +6,11 @@ Module containing various utility functions
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
 
 import re
 
 from enum import Enum, IntEnum
-import quantities as pq
+import instruments.units as u
 
 # CONSTANTS ###################################################################
 
@@ -36,8 +34,8 @@ def assume_units(value, units):
         ``units``, depending on if ``value`` is unitful.
     :rtype: `Quantity`
     """
-    if not isinstance(value, pq.Quantity):
-        value = pq.Quantity(value, units)
+    if not isinstance(value, u.Quantity):
+        value = u.Quantity(value, units)
     return value
 
 
@@ -86,41 +84,40 @@ def convert_temperature(temperature, base):
     """
     # quantities reports equivalence between degC and degK, so a string
     # comparison is needed
-    newval = assume_units(temperature, pq.degC)
-    if newval.units == pq.degF and str(base).split(" ")[1] == 'degC':
+    newval = assume_units(temperature, u.degC)
+    if newval.units == u.degF and str(base).split(" ")[1] == 'degC':
         return_val = ((newval.magnitude - 32.0) * 5.0 / 9.0) * base
     elif str(newval.units).split(" ")[1] == 'K' and str(base).split(" ")[1] == 'degC':
         return_val = (newval.magnitude - 273.15) * base
-    elif str(newval.units).split(" ")[1] == 'K' and base == pq.degF:
+    elif str(newval.units).split(" ")[1] == 'K' and base == u.degF:
         return_val = (newval.magnitude / 1.8 - 459 / 57) * base
-    elif str(newval.units).split(" ")[1] == 'degC' and base == pq.degF:
+    elif str(newval.units).split(" ")[1] == 'degC' and base == u.degF:
         return_val = (newval.magnitude * 9.0 / 5.0 + 32.0) * base
-    elif newval.units == pq.degF and str(base).split(" ")[1] == 'K':
+    elif newval.units == u.degF and str(base).split(" ")[1] == 'K':
         return_val = ((newval.magnitude + 459.57) * 5.0 / 9.0) * base
     elif str(newval.units).split(" ")[1] == 'degC' and str(base).split(" ")[1] == 'K':
         return_val = (newval.magnitude + 273.15) * base
     elif str(newval.units).split(" ")[1] == 'degC' and str(base).split(" ")[1] == 'degC':
         return_val = newval
-    elif newval.units == pq.degF and base == pq.degF:
+    elif newval.units == u.degF and base == u.degF:
         return_val = newval
     elif str(newval.units).split(" ")[1] == 'K' and str(base).split(" ")[1] == 'K':
         return_val = newval
     else:
-        raise ValueError(
-            "Unable to convert " + str(newval.units) + " to " + str(base))
+        raise ValueError(f"Unable to convert {str(newval.units)} to {str(base)}")
     return return_val
 
 
-def split_unit_str(s, default_units=pq.dimensionless, lookup=None):
+def split_unit_str(s, default_units=u.dimensionless, lookup=None):
     """
     Given a string of the form "12 C" or "14.7 GHz", returns a tuple of the
     numeric part and the unit part, irrespective of how many (if any) whitespace
     characters appear between.
 
     By design, the tuple should be such that it can be unpacked into
-    :func:`pq.Quantity`::
+    :func:`u.Quantity`::
 
-        >>> pq.Quantity(*split_unit_str("1 s"))
+        >>> u.Quantity(*split_unit_str("1 s"))
         array(1) * s
 
     For this reason, the second element of the tuple may be a unit or
@@ -132,7 +129,7 @@ def split_unit_str(s, default_units=pq.dimensionless, lookup=None):
     :param callable lookup: If specified, this function is called on the
         units part of the input string. If `None`, no lookup is performed.
         Lookups are never performed on the default units.
-    :rtype: `tuple` of a `float` and a `str` or `pq.Quantity`
+    :rtype: `tuple` of a `float` and a `str` or `u.Quantity`
     """
     if lookup is None:
         lookup = lambda x: x
@@ -156,12 +153,10 @@ def split_unit_str(s, default_units=pq.dimensionless, lookup=None):
 
         return float(val), lookup(units)
 
-    else:
-        try:
-            return float(s), default_units
-        except ValueError:
-            raise ValueError("Could not split '{}' into value "
-                             "and units.".format(repr(s)))
+    try:
+        return float(s), default_units
+    except ValueError:
+        raise ValueError(f"Could not split '{repr(s)}' into value and units.")
 
 
 def rproperty(fget=None, fset=None, doc=None, readonly=False, writeonly=False):
@@ -343,8 +338,8 @@ def unitless_property(command, set_cmd=None, format_code='{:e}', doc=None,
         return float(raw)
 
     def _setter(self, newval):
-        if isinstance(newval, pq.Quantity):
-            if newval.units == pq.dimensionless:
+        if isinstance(newval, u.Quantity):
+            if newval.units == u.dimensionless:
                 newval = float(newval.magnitude)
             else:
                 raise ValueError
@@ -473,22 +468,22 @@ def unitful_property(command, units, set_cmd=None, format_code='{:e}', doc=None,
 
     def _getter(self):
         raw = _in_decor_fcn(self.query("{}?".format(command)))
-        return pq.Quantity(*split_unit_str(raw, units)).rescale(units)
+        return u.Quantity(*split_unit_str(raw, units)).rescale(units)
 
     def _setter(self, newval):
         min_value, max_value = valid_range
         if min_value is not None:
-            if hasattr(min_value, '__call__'):
-                min_value = min_value(self)
+            if callable(min_value):
+                min_value = min_value(self)  # pylint: disable=not-callable
             if newval < min_value:
-                raise ValueError("Unitful quantity is too low. Got {}, minimum "
-                                 "value is {}".format(newval, min_value))
+                raise ValueError(f"Unitful quantity is too low. Got {newval}, "
+                                 f"minimum value is {min_value}")
         if max_value is not None:
-            if hasattr(max_value, '__call__'):
-                max_value = max_value(self)
+            if callable(max_value):
+                max_value = max_value(self)  # pylint: disable=not-callable
             if newval > max_value:
-                raise ValueError("Unitful quantity is too high. Got {}, maximum"
-                                 " value is {}".format(newval, max_value))
+                raise ValueError(f"Unitful quantity is too high. Got {newval}, "
+                                 f"maximum value is {max_value}")
         # Rescale to the correct unit before printing. This will also
         # catch bad units.
         strval = format_code.format(
@@ -548,13 +543,13 @@ def bounded_unitful_property(command, units, min_fmt_str="{}:MIN?",
 
     def _min_getter(self):
         if valid_range[0] == "query":
-            return pq.Quantity(*split_unit_str(self.query(min_fmt_str.format(command)), units))
+            return u.Quantity(*split_unit_str(self.query(min_fmt_str.format(command)), units))
 
         return assume_units(valid_range[0], units).rescale(units)
 
     def _max_getter(self):
         if valid_range[1] == "query":
-            return pq.Quantity(*split_unit_str(self.query(max_fmt_str.format(command)), units))
+            return u.Quantity(*split_unit_str(self.query(max_fmt_str.format(command)), units))
 
         return assume_units(valid_range[1], units).rescale(units)
 
@@ -614,7 +609,7 @@ def string_property(command, set_cmd=None, bookmark_symbol='"', doc=None,
 # CLASSES #####################################################################
 
 
-class ProxyList(object):
+class ProxyList:
     """
     This is a special class used to generate lists of objects where the valid
     keys are defined by the `valid_set` init parameter. This allows an
@@ -666,8 +661,7 @@ class ProxyList(object):
             if not isinstance(idx, self._valid_set):
                 raise IndexError("Index out of range. Must be "
                                  "in {}.".format(self._valid_set))
-            else:
-                idx = idx.value
+            idx = idx.value
         else:
             if idx not in self._valid_set:
                 raise IndexError("Index out of range. Must be "

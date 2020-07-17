@@ -6,19 +6,14 @@ Provides an abstract base class for power supply instruments
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-
 import abc
-
-from future.utils import with_metaclass
 
 from instruments.abstract_instruments import Instrument
 
 # CLASSES #####################################################################
 
 
-class PowerSupplyChannel(with_metaclass(abc.ABCMeta, object)):
+class PowerSupplyChannel(metaclass=abc.ABCMeta):
 
     """
     Abstract base class for power supply output channels.
@@ -38,7 +33,6 @@ class PowerSupplyChannel(with_metaclass(abc.ABCMeta, object)):
 
         :type: `~enum.Enum`
         """
-        pass
 
     @mode.setter
     @abc.abstractmethod
@@ -54,7 +48,6 @@ class PowerSupplyChannel(with_metaclass(abc.ABCMeta, object)):
 
         :type: `~quantities.quantity.Quantity`
         """
-        pass
 
     @voltage.setter
     @abc.abstractmethod
@@ -70,7 +63,6 @@ class PowerSupplyChannel(with_metaclass(abc.ABCMeta, object)):
 
         :type: `~quantities.quantity.Quantity`
         """
-        pass
 
     @current.setter
     @abc.abstractmethod
@@ -86,7 +78,6 @@ class PowerSupplyChannel(with_metaclass(abc.ABCMeta, object)):
 
         :type: `bool`
         """
-        pass
 
     @output.setter
     @abc.abstractmethod
@@ -94,7 +85,7 @@ class PowerSupplyChannel(with_metaclass(abc.ABCMeta, object)):
         pass
 
 
-class PowerSupply(with_metaclass(abc.ABCMeta, Instrument)):
+class PowerSupply(Instrument, metaclass=abc.ABCMeta):
 
     """
     Abstract base class for power supply instruments.
@@ -127,7 +118,6 @@ class PowerSupply(with_metaclass(abc.ABCMeta, Instrument)):
 
         :type: `~quantities.quantity.Quantity`
         """
-        pass
 
     @voltage.setter
     @abc.abstractmethod
@@ -143,7 +133,6 @@ class PowerSupply(with_metaclass(abc.ABCMeta, Instrument)):
 
         :type: `~quantities.quantity.Quantity`
         """
-        pass
 
     @current.setter
     @abc.abstractmethod

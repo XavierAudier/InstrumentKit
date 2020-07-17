@@ -6,19 +6,15 @@ Provides an abstract base class for oscilloscope instruments
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
 
 import abc
-
-from future.utils import with_metaclass
 
 from instruments.abstract_instruments import Instrument
 
 # CLASSES #####################################################################
 
 
-class OscilloscopeDataSource(with_metaclass(abc.ABCMeta, object)):
+class OscilloscopeDataSource(metaclass=abc.ABCMeta):
 
     """
     Abstract base class for data sources (physical channels, math, ref) on
@@ -81,7 +77,7 @@ class OscilloscopeDataSource(with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
 
-class OscilloscopeChannel(with_metaclass(abc.ABCMeta, object)):
+class OscilloscopeChannel(metaclass=abc.ABCMeta):
 
     """
     Abstract base class for physical channels on an oscilloscope.
@@ -109,7 +105,7 @@ class OscilloscopeChannel(with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
 
-class Oscilloscope(with_metaclass(abc.ABCMeta, Instrument)):
+class Oscilloscope(Instrument, metaclass=abc.ABCMeta):
 
     """
     Abstract base class for oscilloscope instruments.

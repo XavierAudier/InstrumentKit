@@ -6,8 +6,6 @@ Module for working with ThorLabs packets.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
 
 import struct
 
@@ -31,7 +29,7 @@ hw_info_data = struct.Struct(
 # CLASSES #####################################################################
 
 
-class ThorLabsPacket(object):
+class ThorLabsPacket:
 
     """
     This class is used to wrap data to-/from- the instrument. Because of the

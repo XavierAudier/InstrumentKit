@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Unit tests for the GI GPIBUSB communication layer
+Unit tests for the GPIBUSB communication layer
 """
 
 # IMPORTS ####################################################################
 
-from __future__ import absolute_import
 
 import pytest
 import serial
-import quantities as pq
+import instruments.units as u
 
 from instruments.abstract_instruments.comm import GPIBCommunicator, SerialCommunicator
 from instruments.tests import unit_eq
@@ -38,7 +37,7 @@ def test_gpibusbcomm_init_correct_values_new_firmware():
     assert comm._version == 5
     assert comm._eos == "\n"
     assert comm._eoi is True
-    unit_eq(comm._timeout, 1000 * pq.millisecond)
+    unit_eq(comm._timeout, 1000 * u.millisecond)
 
 
 def test_gpibusbcomm_init_correct_values_old_firmware():
@@ -196,10 +195,10 @@ def test_gpibusbcomm_timeout():
     comm = GPIBCommunicator(mock.MagicMock(), 1)
     comm._version = 5
 
-    unit_eq(comm.timeout, 1000 * pq.millisecond)
+    unit_eq(comm.timeout, 1000 * u.millisecond)
 
-    comm.timeout = 5000 * pq.millisecond
-    comm._file.sendcmd.assert_called_with("++read_tmo_ms 5000.0")
+    comm.timeout = 5000 * u.millisecond
+    comm._file.sendcmd.assert_called_with("++read_tmo_ms 5000")
 
 
 def test_gpibusbcomm_close():
@@ -235,7 +234,7 @@ def test_gpibusbcomm_sendcmd():
     comm._file.sendcmd.assert_has_calls([
         mock.call("+a:1"),
         mock.call("++eoi 1"),
-        mock.call("++read_tmo_ms 1000.0"),
+        mock.call("++read_tmo_ms 1000"),
         mock.call("++eos 2"),
         mock.call("mock")
     ])

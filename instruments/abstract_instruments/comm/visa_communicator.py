@@ -7,27 +7,14 @@ library.
 
 # IMPORTS #####################################################################
 
-# pylint: disable=wrong-import-position
-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import unicode_literals
 
 import io
-from builtins import str
 
-import quantities as pq
+import visa
 
 from instruments.abstract_instruments.comm import AbstractCommunicator
 from instruments.util_fns import assume_units
-
-if not getattr(__builtins__, "WindowsError", None):
-    class WindowsError(OSError):
-        pass
-try:
-    import visa
-except (ImportError, WindowsError, OSError):
-    visa = None
+import instruments.units as u
 
 # CLASSES #####################################################################
 
@@ -95,11 +82,11 @@ class VisaCommunicator(io.IOBase, AbstractCommunicator):
 
     @property
     def timeout(self):
-        return self._conn.timeout * pq.second
+        return self._conn.timeout * u.second
 
     @timeout.setter
     def timeout(self, newval):
-        newval = assume_units(newval, pq.second).rescale(pq.second).magnitude
+        newval = assume_units(newval, u.second).rescale(u.second).magnitude
         self._conn.timeout = newval
 
     # FILE-LIKE METHODS #
@@ -160,7 +147,6 @@ class VisaCommunicator(io.IOBase, AbstractCommunicator):
         entirety of its contents.
         """
         # TODO: Find out how to flush with pyvisa
-        pass
 
     # METHODS #
 

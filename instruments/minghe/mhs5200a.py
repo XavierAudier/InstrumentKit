@@ -8,14 +8,10 @@ Class originally contributed by Catherine Holloway.
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-
-from builtins import range
 from enum import Enum
 
-import quantities as pq
 from instruments.abstract_instruments import FunctionGenerator
+import instruments.units as u
 from instruments.util_fns import ProxyList, assume_units
 
 # CLASSES #####################################################################
@@ -70,7 +66,7 @@ class MHS5200(FunctionGenerator):
         def _set_amplitude_(self, magnitude, units):
             if units == self._mhs.VoltageMode.peak_to_peak or \
                             units == self._mhs.VoltageMode.rms:
-                magnitude = assume_units(magnitude, "V").rescale(pq.V).magnitude
+                magnitude = assume_units(magnitude, "V").rescale(u.V).magnitude
             elif units == self._mhs.VoltageMode.dBm:
                 raise NotImplementedError("Decibel units are not supported.")
             magnitude *= 100
@@ -122,12 +118,12 @@ class MHS5200(FunctionGenerator):
             """
             query = ":r{0}f".format(self._chan)
             response = self._mhs.query(query)
-            freq = float(response.replace(query, ""))*pq.Hz
+            freq = float(response.replace(query, ""))*u.Hz
             return freq/100.0
 
         @frequency.setter
         def frequency(self, new_val):
-            new_val = assume_units(new_val, pq.Hz).rescale(pq.Hz).\
+            new_val = assume_units(new_val, u.Hz).rescale(u.Hz).\
                           magnitude*100.0
             query = ":s{0}f{1}".format(self._chan, int(new_val))
             self._mhs.sendcmd(query)
@@ -164,11 +160,11 @@ class MHS5200(FunctionGenerator):
             # need to convert
             query = ":r{0}p".format(self._chan)
             response = self._mhs.query(query)
-            return int(response.replace(query, ""))*pq.deg
+            return int(response.replace(query, ""))*u.deg
 
         @phase.setter
         def phase(self, new_val):
-            new_val = assume_units(new_val, pq.deg).rescale("deg").magnitude
+            new_val = assume_units(new_val, u.deg).rescale("deg").magnitude
             query = ":s{0}p{1}".format(self._chan, int(new_val))
             self._mhs.sendcmd(query)
 

@@ -6,21 +6,15 @@ Provides support for the Tektronix DPO 70000 oscilloscope series
 
 # IMPORTS #####################################################################
 
-from __future__ import absolute_import
-from __future__ import division
-
 import abc
-import time
-
-from builtins import range
 from enum import Enum
-
-import quantities as pq
+import time
 
 from instruments.abstract_instruments import (
     Oscilloscope, OscilloscopeChannel, OscilloscopeDataSource
 )
 from instruments.generic_scpi import SCPIInstrument
+import instruments.units as u
 from instruments.util_fns import (
     enum_property, string_property, int_property, unitful_property,
     unitless_property, bool_property, ProxyList
@@ -315,7 +309,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         filter_risetime = unitful_property(
             "FILT:RIS",
-            pq.second
+            u.second
         )
 
         label = string_property(
@@ -348,7 +342,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         spectral_center = unitful_property(
             "SPEC:CENTER",
-            pq.Hz,
+            u.Hz,
             doc="""
             The desired frequency of the spectral analyzer output data span
             in Hz.
@@ -357,7 +351,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         spectral_gatepos = unitful_property(
             "SPEC:GATEPOS",
-            pq.second,
+            u.second,
             doc="""
             The gate position. Units are represented in seconds, with respect
             to trigger position.
@@ -366,7 +360,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         spectral_gatewidth = unitful_property(
             "SPEC:GATEWIDTH",
-            pq.second,
+            u.second,
             doc="""
             The time across the 10-division screen in seconds.
             """
@@ -408,7 +402,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         spectral_resolution_bandwidth = unitful_property(
             "SPEC:RESB",
-            pq.Hz,
+            u.Hz,
             doc="""
             The desired resolution bandwidth value. Units are represented in
             Hertz.
@@ -417,7 +411,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         spectral_span = unitful_property(
             "SPEC:SPAN",
-            pq.Hz,
+            u.Hz,
             doc="""
             Specifies the frequency span of the output data vector from the
             spectral analyzer.
@@ -448,7 +442,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         threshhold = unitful_property(
             "THRESH",
-            pq.volt,
+            u.volt,
             doc="""
             The math threshhold in volts
             """
@@ -479,7 +473,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         scale = unitful_property(
             "VERT:SCALE",
-            pq.volt,
+            u.volt,
             doc="""
             The scale in volts per division. The range is from
             ``100e-36`` to ``100e+36``.
@@ -562,17 +556,17 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         bandwidth = unitful_property(
             'BAN',
-            pq.Hz
+            u.Hz
         )
 
         deskew = unitful_property(
             'DESK',
-            pq.second
+            u.second
         )
 
         termination = unitful_property(
             'TERM',
-            pq.ohm
+            u.ohm
         )
 
         label = string_property(
@@ -598,7 +592,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         offset = unitful_property(
             'OFFS',
-            pq.volt,
+            u.volt,
             doc="""
             The vertical offset in units of volts. Voltage is given by
             ``offset+scale*(5*raw/2^15 - position)``.
@@ -616,7 +610,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
         scale = unitful_property(
             'SCALE',
-            pq.volt,
+            u.volt,
             doc="""
             Vertical channel scale in units volts/division. Voltage is given
             by ``offset+scale*(5*raw/2^15 - position)``.
@@ -810,7 +804,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
     horiz_acq_duration = unitful_property(
         'HOR:ACQDURATION',
-        pq.second,
+        u.second,
         readonly=True,
         doc="""
         The duration of the acquisition.
@@ -833,7 +827,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
     horiz_delay_pos = unitful_property(
         'HOR:DEL:POS',
-        pq.percent,
+        u.percent,
         doc="""
         The percentage of the waveform that is displayed left of the center
         graticule.
@@ -842,7 +836,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
     horiz_delay_time = unitful_property(
         'HOR:DEL:TIM',
-        pq.second,
+        u.second,
         doc="""
         The base trigger delay time setting.
         """
@@ -858,7 +852,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
     horiz_main_pos = unitful_property(
         'HOR:MAI:POS',
-        pq.percent,
+        u.percent,
         doc="""
         The percentage of the waveform that is displayed left of the center
         graticule.
@@ -890,7 +884,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
     horiz_sample_rate = unitful_property(
         'HOR:MODE:SAMPLER',
-        pq.Hz,
+        u.Hz,
         doc="""
         The sample rate in samples per second.
         """
@@ -898,7 +892,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
     horiz_scale = unitful_property(
         'HOR:MODE:SCA',
-        pq.second,
+        u.second,
         doc="""
         The horizontal scale in seconds per division. The horizontal scale is
         readonly when `horiz_mode` is manual.
@@ -907,7 +901,7 @@ class TekDPO70000(SCPIInstrument, Oscilloscope):
 
     horiz_pos = unitful_property(
         'HOR:POS',
-        pq.percent,
+        u.percent,
         doc="""
         The position of the trigger point on the screen, left is 0%, right
         is 100%.
